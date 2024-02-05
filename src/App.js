@@ -72,7 +72,7 @@ function App() {
       .then((data) => {
         // console.log("album-id", album.id);
         console.log("data-id", data.id);
-          setMyData(mydata.map((album)=>(album.id==data.id ? data : album)));
+          setMyData(mydata.map((album)=>(album.id===data.id ? data : album)));
         // setMyData((prevAlbum) => {
         //   return prevAlbum.map((album)=>(album.id===data.id ?data:album))
         // });
