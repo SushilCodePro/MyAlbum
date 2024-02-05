@@ -1,6 +1,5 @@
 
 import { useEffect, useState } from 'react';
-import { v4 as uuidv4 } from 'uuid';
 import './App.css';
 function App() {
   
@@ -9,6 +8,7 @@ function App() {
   const [albumToUpdate, setAlbumToUpdate] = useState(null);
 
   useEffect(() => {
+    console.log("In useeffect");
     fetch('https://jsonplaceholder.typicode.com/posts')
       .then((response) => {
         if (!response.ok) {
@@ -28,10 +28,10 @@ function App() {
       });
   }, [])
   function addAlbum() {
-    const uniqueId = Date.now();
+    // const uniqueId = Date.now();
     fetch('https://jsonplaceholder.typicode.com/posts', {
       method: 'POST',
-      body: JSON.stringify({ ...newAlbum, id: uniqueId }),
+      body: JSON.stringify(newAlbum),
       headers: {
         'Content-type': 'application/json; charset=UTF-8',
       },
@@ -40,8 +40,12 @@ function App() {
         return response.json();
       })
       .then((data) => {
-        setMyData((prevAlbum) => [data, ...prevAlbum]);
+        // const updatedData = { ...data, id: data.id || Date.now() };
+        // console.log("data1",data);
+        // data={...data,id:uniqueId};
+        setMyData((prevAlbum) => [data, ...prevAlbum ]);
         setNewAlbum({ title: "Default new title", userId: 1, body: "this new body of new album" });
+        // console.log("data2",data);
       })
       .catch((error) => {
         console.error('Error adding album:', error);
@@ -66,9 +70,13 @@ function App() {
         return response.json();
       })
       .then((data) => {
-        setMyData((prevAlbum) => {
-          return prevAlbum.map((album)=>(album.id===data.id ?data:album))
-        });
+        // console.log("album-id", album.id);
+        console.log("data-id", data.id);
+          setMyData(mydata.map((album)=>(album.id==data.id ? data : album)));
+        // setMyData((prevAlbum) => {
+        //   return prevAlbum.map((album)=>(album.id===data.id ?data:album))
+        // });
+        // console.log("mydata last", mydata[data.id]);
         setAlbumToUpdate(null);
       })
       .catch((error) => {
@@ -82,18 +90,19 @@ function App() {
       method: 'DELETE',
     })
       .then(() => {
-        setMyData((prevAlbum) => {
-          return prevAlbum.filter((album)=>(album.id!==id))
-        });
-        // setAlbumToUpdate(null);
+        setMyData(mydata.filter((album)=>(album.id!==id)));
+        // setMyData((prevAlbum) => {
+        //   return prevAlbum.filter((album)=>(album.id!==id))
+        // });
+        setAlbumToUpdate(null);
       })
       .catch((error) => {
         console.error('Error updating album:', error);
       })
     alert("Deleted");
   }
-  console.log("mydata", mydata);
-
+  // console.log("mydata", mydata);
+  // console.log("albumToUpdate", albumToUpdate);
   return (
     <div className="App">
       <div className='left'>
